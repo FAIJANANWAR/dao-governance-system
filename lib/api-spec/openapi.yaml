@@ -1,22 +1,32 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: DAO Governance System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: proposals
+    description: Governance proposals
+  - name: votes
+    description: Voting operations
+  - name: members
+    description: DAO members
+  - name: treasury
+    description: Treasury operations
+  - name: activity
+    description: Governance activity feed
+  - name: analytics
+    description: Governance analytics
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +34,327 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /proposals:
+    get:
+      operationId: listProposals
+      tags: [proposals]
+      summary: List all proposals
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, pending, executed, defeated, all]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, oldest, most_votes, ending_soon]
+      responses:
+        "200":
+          description: List of proposals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Proposal"
+    post:
+      operationId: createProposal
+      tags: [proposals]
+      summary: Create a new proposal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProposalInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Proposal"
+
+  /proposals/{id}:
+    get:
+      operationId: getProposal
+      tags: [proposals]
+      summary: Get a single proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Proposal detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Proposal"
+        "404":
+          description: Not found
+
+  /proposals/{id}/vote:
+    post:
+      operationId: castVote
+      tags: [votes]
+      summary: Cast a vote on a proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoteInput"
+      responses:
+        "200":
+          description: Vote recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vote"
+
+  /proposals/{id}/votes:
+    get:
+      operationId: listProposalVotes
+      tags: [votes]
+      summary: List votes for a proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of votes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Vote"
+
+  /proposals/{id}/comments:
+    get:
+      operationId: listProposalComments
+      tags: [proposals]
+      summary: List comments on a proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Comments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+    post:
+      operationId: addComment
+      tags: [proposals]
+      summary: Add a comment to a proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentInput"
+      responses:
+        "201":
+          description: Comment added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  /members:
+    get:
+      operationId: listMembers
+      tags: [members]
+      summary: List DAO members
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [voting_power, proposals_created, votes_cast, newest]
+      responses:
+        "200":
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Member"
+
+  /members/{address}:
+    get:
+      operationId: getMember
+      tags: [members]
+      summary: Get a single member profile
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Member profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Not found
+
+  /members/{address}/delegate:
+    post:
+      operationId: delegateVotes
+      tags: [members]
+      summary: Delegate voting power to another member
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelegateInput"
+      responses:
+        "200":
+          description: Delegation updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+
+  /treasury:
+    get:
+      operationId: getTreasury
+      tags: [treasury]
+      summary: Get treasury overview
+      responses:
+        "200":
+          description: Treasury data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Treasury"
+
+  /treasury/transactions:
+    get:
+      operationId: listTreasuryTransactions
+      tags: [treasury]
+      summary: List treasury transactions
+      responses:
+        "200":
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TreasuryTransaction"
+
+  /activity:
+    get:
+      operationId: listActivity
+      tags: [activity]
+      summary: Recent governance activity feed
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  /analytics/summary:
+    get:
+      operationId: getAnalyticsSummary
+      tags: [analytics]
+      summary: High-level DAO governance summary stats
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsSummary"
+
+  /analytics/voting-history:
+    get:
+      operationId: getVotingHistory
+      tags: [analytics]
+      summary: Voting participation over time
+      responses:
+        "200":
+          description: Voting history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VotingHistoryPoint"
+
+  /analytics/token-distribution:
+    get:
+      operationId: getTokenDistribution
+      tags: [analytics]
+      summary: Token distribution among top holders
+      responses:
+        "200":
+          description: Token distribution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TokenDistributionItem"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +362,296 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    Proposal:
+      type: object
+      required: [id, title, description, status, proposer, votesFor, votesAgainst, votesAbstain, quorumRequired, quorumReached, startTime, endTime, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, pending, executed, defeated, queued]
+        proposer:
+          type: string
+        proposerEns:
+          type: ["string", "null"]
+        votesFor:
+          type: number
+        votesAgainst:
+          type: number
+        votesAbstain:
+          type: number
+        quorumRequired:
+          type: number
+        quorumReached:
+          type: boolean
+        startTime:
+          type: string
+        endTime:
+          type: string
+        createdAt:
+          type: string
+        executedAt:
+          type: ["string", "null"]
+        actions:
+          type: array
+          items:
+            type: string
+        timelockDelay:
+          type: ["integer", "null"]
+        discussionUrl:
+          type: ["string", "null"]
+        snapshotBlock:
+          type: ["integer", "null"]
+
+    ProposalInput:
+      type: object
+      required: [title, description, votingDuration]
+      properties:
+        title:
+          type: string
+          minLength: 5
+        description:
+          type: string
+          minLength: 20
+        actions:
+          type: array
+          items:
+            type: string
+        votingDuration:
+          type: integer
+          description: Duration in hours
+        discussionUrl:
+          type: string
+        proposer:
+          type: string
+
+    Vote:
+      type: object
+      required: [id, proposalId, voter, support, weight, createdAt]
+      properties:
+        id:
+          type: integer
+        proposalId:
+          type: integer
+        voter:
+          type: string
+        voterEns:
+          type: ["string", "null"]
+        support:
+          type: string
+          enum: [for, against, abstain]
+        weight:
+          type: number
+        reason:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    VoteInput:
+      type: object
+      required: [voter, support, weight]
+      properties:
+        voter:
+          type: string
+        support:
+          type: string
+          enum: [for, against, abstain]
+        weight:
+          type: number
+        reason:
+          type: string
+
+    Comment:
+      type: object
+      required: [id, proposalId, author, content, createdAt]
+      properties:
+        id:
+          type: integer
+        proposalId:
+          type: integer
+        author:
+          type: string
+        authorEns:
+          type: ["string", "null"]
+        content:
+          type: string
+        createdAt:
+          type: string
+
+    CommentInput:
+      type: object
+      required: [author, content]
+      properties:
+        author:
+          type: string
+        content:
+          type: string
+          minLength: 1
+
+    Member:
+      type: object
+      required: [id, address, votingPower, tokenBalance, proposalsCreated, votesCast, delegatedTo, createdAt]
+      properties:
+        id:
+          type: integer
+        address:
+          type: string
+        ens:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        votingPower:
+          type: number
+        tokenBalance:
+          type: number
+        proposalsCreated:
+          type: integer
+        votesCast:
+          type: integer
+        delegatedTo:
+          type: ["string", "null"]
+        delegatedToEns:
+          type: ["string", "null"]
+        delegatorsCount:
+          type: integer
+        bio:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    DelegateInput:
+      type: object
+      required: [delegateTo]
+      properties:
+        delegateTo:
+          type: string
+
+    Treasury:
+      type: object
+      required: [totalValueUsd, ethBalance, tokenBalance, allocations]
+      properties:
+        totalValueUsd:
+          type: number
+        ethBalance:
+          type: number
+        tokenBalance:
+          type: number
+        stablecoinBalance:
+          type: number
+        changePercent24h:
+          type: number
+        allocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TreasuryAllocation"
+
+    TreasuryAllocation:
+      type: object
+      required: [asset, amount, valueUsd, percent]
+      properties:
+        asset:
+          type: string
+        amount:
+          type: number
+        valueUsd:
+          type: number
+        percent:
+          type: number
+
+    TreasuryTransaction:
+      type: object
+      required: [id, type, asset, amount, valueUsd, address, txHash, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [inflow, outflow, swap]
+        asset:
+          type: string
+        amount:
+          type: number
+        valueUsd:
+          type: number
+        address:
+          type: string
+        txHash:
+          type: string
+        description:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    ActivityItem:
+      type: object
+      required: [id, type, actor, description, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [proposal_created, vote_cast, proposal_executed, proposal_defeated, delegation_changed, comment_added]
+        actor:
+          type: string
+        actorEns:
+          type: ["string", "null"]
+        description:
+          type: string
+        proposalId:
+          type: ["integer", "null"]
+        proposalTitle:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    AnalyticsSummary:
+      type: object
+      required: [totalProposals, activeProposals, totalMembers, totalVotesCast, averageParticipation, successRate, totalTokensCirculating, treasuryValueUsd]
+      properties:
+        totalProposals:
+          type: integer
+        activeProposals:
+          type: integer
+        totalMembers:
+          type: integer
+        totalVotesCast:
+          type: integer
+        averageParticipation:
+          type: number
+        successRate:
+          type: number
+        totalTokensCirculating:
+          type: number
+        treasuryValueUsd:
+          type: number
+
+    VotingHistoryPoint:
+      type: object
+      required: [month, participation, proposalsCreated, proposalsPassed]
+      properties:
+        month:
+          type: string
+        participation:
+          type: number
+        proposalsCreated:
+          type: integer
+        proposalsPassed:
+          type: integer
+
+    TokenDistributionItem:
+      type: object
+      required: [label, percent, amount]
+      properties:
+        label:
+          type: string
+        percent:
+          type: number
+        amount:
+          type: number

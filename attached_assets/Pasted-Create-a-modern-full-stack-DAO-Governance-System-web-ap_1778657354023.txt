@@ -1,0 +1,468 @@
+Create a modern full-stack DAO Governance System web app for my Web3 portfolio.
+The UI should look premium, futuristic, and dark-themed like a high-end blockchain SaaS product.
+Tech Stack:
+
+
+Next.js 14 (App Router)
+
+
+TypeScript
+
+
+Tailwind CSS
+
+
+Framer Motion
+
+
+Solidity smart contracts
+
+
+Hardhat
+
+
+ethers.js
+
+
+wagmi + viem
+
+
+RainbowKit wallet connection
+
+
+OpenZeppelin contracts
+
+
+Supabase for off-chain proposal metadata
+
+
+Recharts for analytics
+
+
+Vercel-ready deployment
+
+
+Project Name:
+“DAO Governance System”
+Core Idea:
+An on-chain DAO governance platform where users holding governance tokens can:
+
+
+Create proposals
+
+
+Vote on proposals
+
+
+Track quorum
+
+
+Execute successful proposals after timelock
+
+
+View governance analytics
+
+
+Connect wallet and interact directly with smart contracts
+
+
+Design Requirements:
+
+
+Dark cyberpunk UI
+
+
+Black + deep navy background
+
+
+Smooth glassmorphism cards
+
+
+Blue/purple glow accents
+
+
+Premium animations
+
+
+Responsive for mobile + desktop
+
+
+Modern typography
+
+
+Animated gradients
+
+
+Professional dashboard layout
+
+
+Pages Required:
+
+
+Landing Page
+
+
+Governance Dashboard
+
+
+Proposal Details Page
+
+
+Create Proposal Page
+
+
+Treasury Analytics Page
+
+
+DAO Members Page
+
+
+Landing Page Sections:
+
+
+Hero section with animated background
+
+
+DAO statistics cards
+
+
+Features section
+
+
+Governance workflow timeline
+
+
+Smart contract architecture section
+
+
+CTA section
+
+
+Footer
+
+
+Dashboard Features:
+
+
+List all proposals
+
+
+Proposal status badges:
+
+
+Active
+
+
+Pending
+
+
+Executed
+
+
+Defeated
+
+
+
+
+Wallet voting power
+
+
+Token balance
+
+
+Quorum progress bars
+
+
+Voting countdown timers
+
+
+Real-time governance activity
+
+
+Proposal System:
+
+
+Create proposal form
+
+
+Title
+
+
+Description
+
+
+Actions
+
+
+Voting duration
+
+
+Minimum token threshold
+
+
+Proposal execution queue
+
+
+Timelock execution
+
+
+Voting Features:
+
+
+Token-weighted voting
+
+
+Vote For / Against / Abstain
+
+
+Live vote percentages
+
+
+Quorum tracking
+
+
+Wallet-based authentication
+
+
+Prevent double voting
+
+
+Smart Contracts:
+Create:
+
+
+GovernanceToken.sol
+
+
+DAOGovernor.sol
+
+
+Timelock.sol
+
+
+Use OpenZeppelin governance modules:
+
+
+ERC20Votes
+
+
+Governor
+
+
+GovernorVotes
+
+
+GovernorCountingSimple
+
+
+GovernorTimelockControl
+
+
+GovernorSettings
+
+
+GovernorVotesQuorumFraction
+
+
+Requirements:
+
+
+Proper Solidity comments
+
+
+Secure contract structure
+
+
+Hardhat deployment scripts
+
+
+Test files included
+
+
+Sepolia deployment config
+
+
+Frontend Requirements:
+
+
+Fully functional wallet connection
+
+
+Real blockchain interactions
+
+
+Toast notifications
+
+
+Skeleton loading states
+
+
+Charts for governance analytics
+
+
+Proposal filtering + sorting
+
+
+Search functionality
+
+
+Beautiful hover animations
+
+
+Reusable components
+
+
+Add These Components:
+
+
+Sidebar navigation
+
+
+Top navbar
+
+
+Proposal cards
+
+
+Vote modal
+
+
+Activity feed
+
+
+Analytics charts
+
+
+Treasury stats widgets
+
+
+Governance timeline
+
+
+Animations:
+
+
+Framer Motion page transitions
+
+
+Hover glow effects
+
+
+Animated counters
+
+
+Floating background particles
+
+
+Smooth modal animations
+
+
+Extra Features:
+
+
+ENS support
+
+
+Delegation system
+
+
+Governance history
+
+
+Proposal discussion comments
+
+
+Dark/light mode toggle
+
+
+DAO treasury overview
+
+
+Gas estimation before voting
+
+
+Folder Structure:
+Generate a professional scalable production-ready folder structure.
+Also Generate:
+
+
+README.md
+
+
+.env.example
+
+
+Deployment guide
+
+
+Smart contract documentation
+
+
+API utility helpers
+
+
+Custom React hooks
+
+
+Reusable UI component library
+
+
+Important:
+
+
+Make the project portfolio-worthy and visually stunning
+
+
+Write clean scalable code
+
+
+Use best practices everywhere
+
+
+Add meaningful mock governance data
+
+
+Ensure all pages are connected and functional
+
+
+Generate complete codebase, not placeholders
+
+
+Make the app look like a real funded startup product
+
+
+UI Inspiration:
+
+
+Snapshot
+
+
+Tally
+
+
+Aragon
+
+
+LayerZero
+
+
+Linear
+
+
+Vercel dashboard
+
+
+At the end:
+
+
+Explain how to run locally
+
+
+Explain how to deploy contracts
+
+
+Explain how to deploy frontend on Vercel
+
+
+Include sample DAO proposals and governance data
+
