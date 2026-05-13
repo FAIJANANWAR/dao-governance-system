@@ -153,7 +153,7 @@ export default function DashboardPage() {
                 <p className="text-muted-foreground">No proposals match your search.</p>
               </div>
             ) : (
-              proposals?.map((proposal, i) => {
+              Array.isArray(proposals) && proposals.map((proposal, i) => {
                 const total = Number(proposal.votesFor) + Number(proposal.votesAgainst) + Number(proposal.votesAbstain);
                 const forPct = total > 0 ? (Number(proposal.votesFor) / total) * 100 : 0;
                 const againstPct = total > 0 ? (Number(proposal.votesAgainst) / total) * 100 : 0;
